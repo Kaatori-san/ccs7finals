@@ -28,24 +28,6 @@ void addRecord()
     fout.write((char*)&student,sizeof(student));
     fout.close();
 }
-void displayAll()
-{
-    studentInfo student;
-    ifstream fin;
-    fin.open("student.txt");
-    fin.read((char*)&student,sizeof(student));
-    while(!fin.eof())
-    {
-        cout<<"Student ID: "<<student.studentID<<endl;
-        cout<<"Full Name: "<<student.fullname<<endl;
-        cout<<"Address: "<<student.address<<endl;
-        cout<<"Gender: "<<student.gender<<endl;
-        cout<<"Degree Program: "<<student.degreeProgram<<endl;
-        cout<<"Year Level: "<<student.yearLevel<<endl;
-        fin.read((char*)&student,sizeof(student));
-    }
-    fin.close();
-}
 main()
 {
     char choice;
@@ -68,7 +50,6 @@ main()
             break;
         case '3':
             cout<<"Display All Records"<<endl;
-            displayAll(); 
             break;
         case '4':
             cout<<"Display Specific Record"<<endl;
