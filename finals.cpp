@@ -29,7 +29,7 @@ void addRecord() {
     cout<<"Enter Full Name: ";getline(cin, student.fullname);
     transform(student.fullname.begin(), student.fullname.end(), student.fullname.begin(),::toupper); 
 
-    cout<<"Enter Birthday: ";getline(cin, student.birthday);
+    cout<<"Enter Birthdate (mm/dd/yyyy): ";getline(cin, student.birthday);
     transform(student.birthday.begin(), student.birthday.end(), student.birthday.begin(),::toupper);
 
     cout<<"Enter Address: ";getline(cin, student.address);
@@ -63,6 +63,43 @@ void addRecord() {
         cout<<"Error in file creation!"<<endl;
     }
 }
+void searchRecord() {
+    string searchID, line;
+    bool found = false;
+
+    clearScreen();
+    cout << "Search Record" << endl;
+    cout << "Enter Student ID to search: ";
+    cin >> searchID;
+    transform(searchID.begin(), searchID.end(), searchID.begin(), ::toupper);
+    cin.ignore();
+
+    ifstream file("records.txt");
+    if (file.is_open()) {
+        while (getline(file, line)) {
+            if (line.find("Student ID: " + searchID) != string::npos) {
+                found = true;
+                cout << "\nRecord Found:\n";
+                cout << line << endl; // Student ID
+                for (int i = 0; i < 6; ++i) { // There are 6 more lines for each record
+                    getline(file, line);
+                    cout << line << endl;
+                }
+                cout << "-----------------" << endl;
+                break;
+            }
+        }
+        if (!found) {
+            cout << "No record found with Student ID: " << searchID << endl;
+        }
+        file.close();
+    } else {
+        cout << "Unable to open file." << endl;
+    }
+    cout << "Press enter to continue. ";
+    cin.get();
+}
+
 main()
 {
     int choice;
@@ -77,6 +114,7 @@ main()
             addRecord();
             break;
         case 2:
+            searchRecord();
             break;
         case 3:
             break;
