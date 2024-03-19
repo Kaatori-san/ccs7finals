@@ -1,68 +1,90 @@
 #include<iostream>
 #include<fstream>
+#include<string>
+#include<cctype>
+#include<algorithm>
 using namespace std;
 
-struct studentInfo
-{
-    double studentID;
+struct Student {
+    string studentID;
     string fullname;
-    // needs birthdate initialization here
+    string birthday;
     string address;
     char gender;
-    char degreeProgram;
-    int yearLevel;
-
+    string degreeProgram;
+    string yearLevel;
 };
-void addRecord()
-{
-    studentInfo student;
-    fopen("student.txt","a");
-    ofstream fout;
-    fout.open("student.txt",ios::app);
+void clearScreen() {
+    cout << "\033[2J\033[1;1H";
+}
+void addRecord() {
+    Student student;
+    ofstream file("records.txt", ios::app);
+
+    clearScreen();
+    cout<<"Add new record"<<endl;
     cout<<"Enter Student ID: ";cin>>student.studentID;
-    cout<<"Enter Full Name: ";cin>>student.fullname;
-    cout<<"Enter Address: ";cin>>student.address;
-    cout<<"Enter Gender: ";cin>>student.gender;
-    cout<<"Enter Degree Program: ";cin>>student.degreeProgram;
-    cout<<"Enter Year Level: ";cin>>student.yearLevel;
-    fout.write((char*)&student,sizeof(student));
-    fout.close();
+    cin.ignore();
+
+    cout<<"Enter Full Name: ";getline(cin, student.fullname);
+    transform(student.fullname.begin(), student.fullname.end(), student.fullname.begin(),::toupper); 
+
+    cout<<"Enter Birthday: ";getline(cin, student.birthday);
+    transform(student.birthday.begin(), student.birthday.end(), student.birthday.begin(),::toupper);
+
+    cout<<"Enter Address: ";getline(cin, student.address);
+    transform(student.address.begin(), student.address.end(), student.address.begin(),::toupper);
+
+    cout<<"Enter Gender (M/F): ";cin>>student.gender;
+    student.gender=toupper(student.gender);
+    cin.ignore();
+
+    cout<<"Enter Degree Program: ";getline(cin, student.degreeProgram);
+    transform(student.degreeProgram.begin(), student.degreeProgram.end(), student.degreeProgram.begin(),::toupper);
+
+    cout<<"Enter Year Level (1/2/3/4/Irregular): ";cin>>student.yearLevel;
+    transform(student.yearLevel.begin(), student.yearLevel.end(), student.yearLevel.begin(),::toupper);
+    cin.ignore();
+    
+    if (file.is_open())
+    {
+        file<<"Student ID: "<<student.studentID<<endl;
+        file<<"Full Name: "<<student.fullname<<endl;
+        file<<"Birthday: "<<student.birthday<<endl;
+        file<<"Address: "<<student.address<<endl;
+        file<<"Gender: "<<student.gender<<endl;
+        file<<"Degree Program: "<<student.degreeProgram<<endl;
+        file<<"Year Level (1/2/3/4/Irregular): "<<student.yearLevel<<endl;
+        file<<"-----------------"<<endl;
+        cout<<"Record Added! Press enter to continue. ";
+        cin.ignore();
+        file.close();
+    }else{
+        cout<<"Error in file creation!"<<endl;
+    }
 }
 main()
 {
-    char choice;
+    int choice;
     do
     {
-        // Main Menu
-        cout<<"Welcome to Group Programmers Student Information System"<<endl;
-        cout<<"What do you want to do?"<<endl;
-        cout<<"1. Add New Record\n2. Search Record\n3. Display All Records\n4. Display Specific Record\n5. Delete Record\n6. Exit"<<endl;
+        clearScreen();
+        cout<<"1. Add Record\n2. Search Record\n3. Delete Record\n4. Display Records\n5. Exit"<<endl;
         cout<<"Please type your selection: ";cin>>choice;
-
-        switch(choice)
+        switch (choice)
         {
-        case '1':
-            cout<<"Add New Record"<<endl;
+        case 1:
             addRecord();
             break;
-        case '2':
-            cout<<"Search Record"<<endl;
+        case 2:
             break;
-        case '3':
-            cout<<"Display All Records"<<endl;
+        case 3:
             break;
-        case '4':
-            cout<<"Display Specific Record"<<endl;
+        case 4:
             break;
-        case '5':
-            cout<<"Delete Record"<<endl;
-            break;
-        case '6':
-            cout<<"Exit"<<endl;
-            return 0;
         default:
-            cout<<"Invalid Input! Please try again."<<endl;
             break;
         }
-    } while (choice != '6');   
+    } while (choice!=5);
+    return 0;
 }
