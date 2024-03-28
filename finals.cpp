@@ -156,6 +156,48 @@ void searchRecord() {
 
 }
 
+void deleteRecord(Student* students, int& numberRecords) {
+    string deleteId;
+    cout << "Enter Student ID to delete: ";
+    cin >> deleteId;
+    int deleteIndex = -1;
+
+    for (int i = 0; i < numberRecords; i++) {
+        if (students[i].studentID == deleteId) {
+            deleteIndex = i;
+            cout << "Record deleted! Please enter any key to continue. ";
+            cin.get();
+            break; 
+        }
+    }
+
+    if (deleteIndex == -1) {
+        cout << "Record not found!" << endl;
+    } else {
+        for (int i = deleteIndex; i < numberRecords - 1; i++) {
+            students[i] = students[i + 1];
+        }
+        numberRecords--;
+        cin.get();
+
+        ofstream file("records.txt", ios::trunc);
+        if (file.is_open()) {
+            for (int i = 0; i < numberRecords; i++) {
+                file << "Student ID: " << students[i].studentID << endl;
+                file << "Full Name: " << students[i].fullName << endl;
+                file << "Birthday: " << students[i].birthday << endl;
+                file << "Address: " << students[i].address << endl;
+                file << "Gender: " << students[i].gender << endl;
+                file << "Degree Program: " << students[i].degreeProgram << endl;
+                file << "Year Level: " << students[i].yearLevel << endl;
+                file << "-----------------" << endl;
+            }
+        }
+        file.close();
+        
+    }
+
+}
 main()
 {
     int choice;
@@ -175,6 +217,7 @@ main()
             searchRecord();
             break;
         case 3:
+            deleteRecord(students,numberRecords);
             break;
         case 4:
             break;
