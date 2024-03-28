@@ -165,7 +165,9 @@ void deleteRecord(Student* students, int& numberRecords) {
     for (int i = 0; i < numberRecords; i++) {
         if (students[i].studentID == deleteId) {
             deleteIndex = i;
-            break;
+            cout << "Record deleted! Please enter any key to continue. ";
+            cin.get();
+            break; 
         }
     }
 
@@ -176,9 +178,8 @@ void deleteRecord(Student* students, int& numberRecords) {
             students[i] = students[i + 1];
         }
         numberRecords--;
-        cout << "Record deleted!" << endl;
+        cin.get();
 
-        // Write the updated records to the file
         ofstream file("records.txt", ios::trunc);
         if (file.is_open()) {
             for (int i = 0; i < numberRecords; i++) {
@@ -193,7 +194,9 @@ void deleteRecord(Student* students, int& numberRecords) {
             }
         }
         file.close();
+        
     }
+
 }
 main()
 {
