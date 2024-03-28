@@ -41,7 +41,6 @@ void addRecord(Student* students,int& numberRecords) {
     transform(newStudent.address.begin(), newStudent.address.end(), newStudent.address.begin(),::toupper);
 
     cout<<"Enter Gender (M/F): ";cin>>newStudent.gender;
-    newStudent.gender=toupper(newStudent.gender);
     cin.ignore();
 
     cout<<"Enter Degree Program: ";getline(cin, newStudent.degreeProgram);
@@ -57,7 +56,13 @@ void addRecord(Student* students,int& numberRecords) {
         file<<"Full Name: "<<newStudent.fullName<<endl;
         file<<"Birthday: "<<newStudent.birthday<<endl;
         file<<"Address: "<<newStudent.address<<endl;
-        file<<"Gender: "<<newStudent.gender<<endl;
+        if (newStudent.gender == 'M'||newStudent.gender == 'm')
+        {
+            file<<"Gender: MALE"<<endl;
+        }else
+        {
+            file<<"Gender: FEMALE"<<endl;
+        }
         file<<"Degree Program: "<<newStudent.degreeProgram<<endl;
         file<<"Year Level (1/2/3/4/Irregular): "<<newStudent.yearLevel<<endl;
         file<<"-----------------"<<endl;
@@ -96,7 +101,7 @@ void searchRecord() {
             {
                 while (getline(file, line)) 
                 {
-                    if (line.find("Full Name: " + searchID) != string::npos) 
+                    if (line.find(searchID) != string::npos) 
                     {
                         found = true;
                         cout << "\nRecord Found:\n";
@@ -106,10 +111,15 @@ void searchRecord() {
                             getline(file, line);
                             cout << line << endl;
                         }
-                    cout << "-----------------" << endl;
-                    break;
+                        cout << "-----------------" << endl;
+                        break;
                     }
                 }
+                if (!found) 
+                {
+                    cout << "No record found with Student ID: " << searchID << endl;
+                }
+                file.close();
             }
             break;
         }
