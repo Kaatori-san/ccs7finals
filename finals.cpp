@@ -18,6 +18,20 @@ struct Student {
 void clearScreen() {
     cout << "\033[2J\033[1;1H";
 }
+bool checkStudentIDExists(string studentID, string file_path) { // check if student id already exists
+    ifstream file(file_path);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            if (line.find(studentID) != string::npos) {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+    }
+    return false;
+}
 void addRecord(Student* students,int& numberRecords) {
     Student newStudent;
     Student lastName;
@@ -40,6 +54,10 @@ void addRecord(Student* students,int& numberRecords) {
             cout<<"Invalid input. Student ID must be a number."<<endl;
             goto studentID;
         }
+    }
+    if (checkStudentIDExists(newStudent.studentID, "records.txt")) {
+        cout << "Student ID already exists." << endl;
+        goto studentID;
     }
 
     fullName:
@@ -112,7 +130,7 @@ void addRecord(Student* students,int& numberRecords) {
             file<<"Gender: FEMALE"<<endl;
         }
         file<<"Degree Program: "<<newStudent.degreeProgram<<endl;
-        file<<"Year Level (1/2/3/4/Irregular): "<<newStudent.yearLevel<<endl;
+        file<<"Year Level: "<<newStudent.yearLevel<<endl;
         file<<"-----------------"<<endl;
         cout<<"Record Added! Press enter to continue... ";
         cin.ignore();
@@ -127,7 +145,7 @@ void addRecord(Student* students,int& numberRecords) {
 void displayAllRecords() {
     clearScreen();
     cout << "Displaying All Records:" << endl;
-    ifstream file("records.txt");
+    fstream file("records.txt", ios::in);
     if (file.is_open()) {
         string line;
         while (getline(file, line)) {
@@ -248,7 +266,7 @@ void deleteRecord(Student* students, int& numberRecords) {
             break; 
         }
     }
-
+    
     if (deleteIndex == -1) {
         cout << "Record not found!" << endl;
         cout << "Please enter any key to continue... ";
