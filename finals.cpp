@@ -80,6 +80,13 @@ void addRecord(Student* students,int& numberRecords) {
 
     cout<<"Enter Degree Program: ";getline(cin, newStudent.degreeProgram);
     transform(newStudent.degreeProgram.begin(), newStudent.degreeProgram.end(), newStudent.degreeProgram.begin(),::toupper);
+    while(any_of(newStudent.degreeProgram.begin(), newStudent.degreeProgram.end(), ::isdigit)){
+    cout<<"Error: Degree program cannot contain numbers. Please try again."<<endl;
+    cin.ignore();
+    cout<<"Enter Degree Program: ";
+    getline(cin, newStudent.degreeProgram);
+    transform(newStudent.degreeProgram.begin(), newStudent.degreeProgram.end(), newStudent.degreeProgram.begin(), ::toupper);
+}
 
     yearLevel:
     cout<<"Enter Year Level (1/2/3/4/Irregular): ";cin>>newStudent.yearLevel;
@@ -302,8 +309,15 @@ main()
         case 4:
             displayAllRecords();
             break;
-        default:
+        case 5:
+            cout<<"Thank you for using our system. Have a good day!"<<endl;
             break;
+        default:
+            cout<<"Invalid choice. Please try again."<<endl;
+            cin.get();
+            cin.get();
+            break;
+            
         }
     } while (choice!=5);
     return 0;
