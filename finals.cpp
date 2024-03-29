@@ -6,7 +6,7 @@
 #include<algorithm>
 using namespace std;
 
-struct Student {
+struct Student { // structure for Student
     string studentID;
     string fullName;
     string birthday;
@@ -15,10 +15,14 @@ struct Student {
     string degreeProgram;
     string yearLevel;
 };
-void clearScreen() {
+void waitUserInput() { // wait for user to press enter to continue
+    cout << "\nPress enter to continue...";
+    cin.get();
+}
+void clearScreen() { // clears screen
     cout << "\033[2J\033[1;1H";
 }
-void addRecord(Student* students,int& numberRecords) {
+void addRecord(Student* students,int& numberRecords) { // stores records to file
     Student newStudent;
     Student lastName;
     ofstream file("records.txt", ios::app);
@@ -114,9 +118,8 @@ void addRecord(Student* students,int& numberRecords) {
         file<<"Degree Program: "<<newStudent.degreeProgram<<endl;
         file<<"Year Level (1/2/3/4/Irregular): "<<newStudent.yearLevel<<endl;
         file<<"-----------------"<<endl;
-        cout<<"Record Added! Press enter to continue... ";
-        cin.ignore();
-        file.close();
+        cout<<"Record Added!";
+        waitUserInput();
     }else{
         cout<<"Error in file creation!"<<endl;
     }
@@ -124,7 +127,7 @@ void addRecord(Student* students,int& numberRecords) {
     numberRecords++;
 }
 
-void displayAllRecords() {
+void displayAllRecords() { // show all stored records
     clearScreen();
     cout << "Displaying All Records:" << endl;
     ifstream file("records.txt");
@@ -137,12 +140,10 @@ void displayAllRecords() {
     } else {
         cout << "Unable to open records.txt" << endl;
     }
-    cout << "Press enter to continue... ";
-    cin.get();
-    cin.get();
+    waitUserInput();
 }
 
-void searchRecord() {
+void searchRecord() { // search for record
     string searchID, line;
     int choice;
     bool found = false;
@@ -187,8 +188,7 @@ void searchRecord() {
                 }
                 file.close();
             }
-            cout << "Press enter to continue... ";
-            cin.get();
+            waitUserInput();
             break;
         }
         case 2: // Search by ID
@@ -225,15 +225,14 @@ void searchRecord() {
             {
                 cout << "Unable to open file." << endl;
             }
-            cout << "Press enter to continue... ";
-            cin.get();
+            waitUserInput();
             break;
         }
     }
 
 }
 
-void deleteRecord(Student* students, int& numberRecords) {
+void deleteRecord(Student* students, int& numberRecords) { // deletes record
     string deleteId;
     clearScreen();
     cout << "Enter Student ID to delete: ";
@@ -243,23 +242,22 @@ void deleteRecord(Student* students, int& numberRecords) {
     for (int i = 0; i < numberRecords; i++) {
         if (students[i].studentID == deleteId) {
             deleteIndex = i;
-            cout << "Record deleted! Please enter any key to continue... ";
+            cout << "Record deleted!";
+            waitUserInput();
             cin.get();
             break; 
         }
     }
 
     if (deleteIndex == -1) {
-        cout << "Record not found!" << endl;
-        cout << "Please enter any key to continue... ";
+        cout << "Record not found!";
+        waitUserInput();
         cin.get();
-        cin.get(); 
     } else {
         for (int i = deleteIndex; i < numberRecords - 1; i++) {
             students[i] = students[i + 1];
         }
         numberRecords--;
-        cin.get();
 
         ofstream file("records.txt", ios::trunc);
         if (file.is_open()) {
@@ -278,7 +276,7 @@ void deleteRecord(Student* students, int& numberRecords) {
     }
 }
 
-main()
+main() 
 {
     int choice;
     Student students[100];
@@ -313,12 +311,12 @@ main()
             cout<<"Thank you for using our system. Have a good day!"<<endl;
             break;
         default:
-            cout<<"Invalid choice. Please try again."<<endl;
-            cin.get();
-            cin.get();
+            cout<<"Invalid choice. Please try again.";
+            waitUserInput();
             break;
             
         }
     } while (choice!=5);
+
     return 0;
 }
