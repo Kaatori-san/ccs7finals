@@ -18,6 +18,20 @@ struct Student {
 void clearScreen() {
     cout << "\033[2J\033[1;1H";
 }
+bool checkStudentIDExists(string studentID, string file_path) { // check if student id already exists
+    ifstream file(file_path);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            if (line.find(studentID) != string::npos) {
+                file.close();
+                return true;
+            }
+        }
+        file.close();
+    }
+    return false;
+}
 void addRecord(Student* students,int& numberRecords) {
     Student newStudent;
     Student lastName;
@@ -28,7 +42,7 @@ void addRecord(Student* students,int& numberRecords) {
         return;
     }
     clearScreen();
-    cout<<"Add new record"<<endl;
+    cout<<"Add new record\n---------------------------"<<endl;
 
     studentID:
     cout<<"Enter Student ID: ";cin>>newStudent.studentID;
@@ -40,6 +54,10 @@ void addRecord(Student* students,int& numberRecords) {
             cout<<"Invalid input. Student ID must be a number."<<endl;
             goto studentID;
         }
+    }
+    if (checkStudentIDExists(newStudent.studentID, "records.txt")) {
+        cout << "Student ID already exists." << endl;
+        goto studentID;
     }
 
     fullName:
@@ -94,7 +112,7 @@ void addRecord(Student* students,int& numberRecords) {
     cin.ignore();
     if (newStudent.yearLevel != "1" && newStudent.yearLevel != "2" && newStudent.yearLevel != "3" && newStudent.yearLevel != "4" && newStudent.yearLevel != "IRREGULAR")
     {
-        cout<<"Invalid input. Year Level must be either '1', '2', '3', '4' or 'IRREGULAR'."<<endl;
+        cout<<"Invalid input. Year Level must be either 1, 2, 3, 4 or Irregular."<<endl;
         goto yearLevel;
     }
     
@@ -112,7 +130,7 @@ void addRecord(Student* students,int& numberRecords) {
             file<<"Gender: FEMALE"<<endl;
         }
         file<<"Degree Program: "<<newStudent.degreeProgram<<endl;
-        file<<"Year Level (1/2/3/4/Irregular): "<<newStudent.yearLevel<<endl;
+        file<<"Year Level: "<<newStudent.yearLevel<<endl;
         file<<"-----------------"<<endl;
         cout<<"Record Added! Press enter to continue... ";
         cin.ignore();
@@ -126,8 +144,8 @@ void addRecord(Student* students,int& numberRecords) {
 
 void displayAllRecords() {
     clearScreen();
-    cout << "Displaying All Records:" << endl;
-    ifstream file("records.txt");
+    cout << "Displaying All Records\n---------------------------" << endl;
+    fstream file("records.txt", ios::in);
     if (file.is_open()) {
         string line;
         while (getline(file, line)) {
@@ -149,10 +167,11 @@ void searchRecord() {
 
     clearScreen();
 
-    cout<<"Search Record"<<endl;
+    cout<<"Search Record\n---------------------------"<<endl;
     cout<<"Choose which method to search"<<endl;
     cout<<"1. Search by Name"<<endl;
     cout<<"2. Search by  Student ID"<<endl;
+    cout<<"3. Exit"<<endl;
     cout<<"Enter choice: ";cin>>choice;
 
     switch(choice)
@@ -229,6 +248,10 @@ void searchRecord() {
             cin.get();
             break;
         }
+        case 3: // Exit
+        {
+            break;
+        }
     }
 
 }
@@ -236,8 +259,8 @@ void searchRecord() {
 void deleteRecord(Student* students, int& numberRecords) {
     string deleteId;
     clearScreen();
-    cout << "Enter Student ID to delete: ";
-    cin >> deleteId;
+    cout << "Delete Record\n---------------------------" << endl;
+    cout << "Enter Student ID to delete: ";cin >> deleteId;
     int deleteIndex = -1;
 
     for (int i = 0; i < numberRecords; i++) {
@@ -248,7 +271,6 @@ void deleteRecord(Student* students, int& numberRecords) {
             break; 
         }
     }
-
     if (deleteIndex == -1) {
         cout << "Record not found!" << endl;
         cout << "Please enter any key to continue... ";
