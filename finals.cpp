@@ -240,12 +240,29 @@ void deleteRecord(Student* students, int& numberRecords) {
     cin >> deleteId;
     int deleteIndex = -1;
 
+    ifstream file("records.txt");
+    if (file.is_open()) {
+        // Clear the students array and read the records from the file
+        numberRecords = 0;
+        Student tempStudent;
+        while (file >> tempStudent.studentID) {
+            students[numberRecords] = tempStudent;
+            file >> students[numberRecords].fullName;
+            file >> students[numberRecords].birthday;
+            file >> students[numberRecords].address;
+            file >> students[numberRecords].gender;
+            file >> students[numberRecords].degreeProgram;
+            file >> students[numberRecords].yearLevel;
+            numberRecords++;
+            file.ignore();
+        }
+        file.close();
+    }
+
     for (int i = 0; i < numberRecords; i++) {
         if (students[i].studentID == deleteId) {
             deleteIndex = i;
-            cout << "Record deleted! Please enter any key to continue... ";
-            cin.get();
-            break; 
+            break;
         }
     }
 
@@ -253,13 +270,12 @@ void deleteRecord(Student* students, int& numberRecords) {
         cout << "Record not found!" << endl;
         cout << "Please enter any key to continue... ";
         cin.get();
-        cin.get(); 
+        cin.get();
     } else {
         for (int i = deleteIndex; i < numberRecords - 1; i++) {
             students[i] = students[i + 1];
         }
         numberRecords--;
-        cin.get();
 
         ofstream file("records.txt", ios::trunc);
         if (file.is_open()) {
@@ -275,6 +291,9 @@ void deleteRecord(Student* students, int& numberRecords) {
             }
         }
         file.close();
+
+        cout << "Record deleted! Please enter any key to continue... ";
+        cin.get();
     }
 }
 
