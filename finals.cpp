@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<sstream>
 #include<cctype>
 #include<algorithm>
 using namespace std;
@@ -28,40 +29,85 @@ void addRecord(Student* students,int& numberRecords) {
     }
     clearScreen();
     cout<<"Add new record"<<endl;
+
+    studentID:
     cout<<"Enter Student ID: ";cin>>newStudent.studentID;
     cin.ignore();
+    for(int i=0;i<newStudent.studentID.length();i++)
+    {
+        if(!isdigit(newStudent.studentID[i]))
+        {
+            cout<<"Invalid input. Student ID must be a number."<<endl;
+            goto studentID;
+        }
+    }
 
+    fullName:
     cout<<"Enter Full Name: ";getline(cin, newStudent.fullName);
-    transform(newStudent.fullName.begin(), newStudent.fullName.end(), newStudent.fullName.begin(),::toupper); 
+    transform(newStudent.fullName.begin(), newStudent.fullName.end(), newStudent.fullName.begin(),::toupper);
+    for(int i=0;i<newStudent.fullName.length();i++)
+    {
+        if(isdigit(newStudent.fullName[i]))
+        {
+            cout<<"Invalid input. Full Name must not contain numbers."<<endl;
+            goto fullName;
+        }
+    }
 
+    birthdate:
     cout<<"Enter Birthdate (mm/dd/yyyy): ";getline(cin, newStudent.birthday);
-    transform(newStudent.birthday.begin(), newStudent.birthday.end(), newStudent.birthday.begin(),::toupper);
+    stringstream ss(newStudent.birthday);
+    int day, month, year;
+    char slash;
+    ss>>month>>slash>>day>>slash>>year;
+    if(!ss)
+    {
+        cout<<"Invalid input. Birthdate must be in mm/dd/yyyy format."<<endl;
+        goto birthdate;
+    }
 
     cout<<"Enter Address: ";getline(cin, newStudent.address);
     transform(newStudent.address.begin(), newStudent.address.end(), newStudent.address.begin(),::toupper);
 
+    gender:
     cout<<"Enter Gender (M/F): ";cin>>newStudent.gender;
-    newStudent.gender=toupper(newStudent.gender);
     cin.ignore();
+    if (newStudent.gender != 'M' && newStudent.gender != 'F' && newStudent.gender != 'm' && newStudent.gender != 'f')
+    {
+        cout<<"Invalid input. Gender must be either 'M' or 'F'."<<endl;
+        goto gender;
+    }
 
     cout<<"Enter Degree Program: ";getline(cin, newStudent.degreeProgram);
     transform(newStudent.degreeProgram.begin(), newStudent.degreeProgram.end(), newStudent.degreeProgram.begin(),::toupper);
 
+    yearLevel:
     cout<<"Enter Year Level (1/2/3/4/Irregular): ";cin>>newStudent.yearLevel;
     transform(newStudent.yearLevel.begin(), newStudent.yearLevel.end(), newStudent.yearLevel.begin(),::toupper);
     cin.ignore();
+    if (newStudent.yearLevel != "1" && newStudent.yearLevel != "2" && newStudent.yearLevel != "3" && newStudent.yearLevel != "4" && newStudent.yearLevel != "IRREGULAR")
+    {
+        cout<<"Invalid input. Year Level must be either '1', '2', '3', '4' or 'IRREGULAR'."<<endl;
+        goto yearLevel;
+    }
     
     if (file.is_open())
     {
         file<<"Student ID: "<<newStudent.studentID<<endl;
-        file<<"Full Name: "<<newStudent.fullName<<endl;
+        file<<"Name: "<<newStudent.fullName<<endl;
         file<<"Birthday: "<<newStudent.birthday<<endl;
         file<<"Address: "<<newStudent.address<<endl;
-        file<<"Gender: "<<newStudent.gender<<endl;
+        if (newStudent.gender == 'M'||newStudent.gender == 'm')
+        {
+            file<<"Gender: MALE"<<endl;
+        }else if (newStudent.gender == 'F'||newStudent.gender == 'f')
+        {
+            file<<"Gender: FEMALE"<<endl;
+        }
         file<<"Degree Program: "<<newStudent.degreeProgram<<endl;
         file<<"Year Level (1/2/3/4/Irregular): "<<newStudent.yearLevel<<endl;
         file<<"-----------------"<<endl;
-        cout<<"Record Added! Press enter to continue. ";
+        cout<<"Record Added! Press enter to continue... ";
         cin.ignore();
         file.close();
     }else{
@@ -70,6 +116,25 @@ void addRecord(Student* students,int& numberRecords) {
     students[numberRecords] = newStudent;
     numberRecords++;
 }
+
+void displayAllRecords() {
+    clearScreen();
+    cout << "Displaying All Records:" << endl;
+    ifstream file("records.txt");
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            cout << line << endl;
+        }
+        file.close();
+    } else {
+        cout << "Unable to open records.txt" << endl;
+    }
+    cout << "Press enter to continue... ";
+    cin.get();
+    cin.get();
+}
+
 void searchRecord() {
     string searchID, line;
     int choice;
@@ -85,7 +150,7 @@ void searchRecord() {
 
     switch(choice)
     {
-        case 1:
+        case 1: // Search by Full Name
         {
             cout << "Enter Full Name to search: ";
             cin.ignore();
@@ -96,7 +161,7 @@ void searchRecord() {
             {
                 while (getline(file, line)) 
                 {
-                    if (line.find("Full Name: " + searchID) != string::npos) 
+                    if (line.find("Name: " + searchID) != string::npos) 
                     {
                         found = true;
                         cout << "\nRecord Found:\n";
@@ -106,14 +171,20 @@ void searchRecord() {
                             getline(file, line);
                             cout << line << endl;
                         }
-                    cout << "-----------------" << endl;
-                    break;
+                        break;
                     }
                 }
+                if (!found) 
+                {
+                    cout << "No record found with Name: " << searchID << endl;
+                }
+                file.close();
             }
+            cout << "Press enter to continue... ";
+            cin.get();
             break;
         }
-        case 2:
+        case 2: // Search by ID
         {
             cout << "Enter Student ID to search: ";
             cin >> searchID;
@@ -135,7 +206,6 @@ void searchRecord() {
                             getline(file, line);
                             cout << line << endl;
                         }
-                        cout << "-----------------" << endl;
                         break;
                     }
                 }
@@ -148,7 +218,7 @@ void searchRecord() {
             {
                 cout << "Unable to open file." << endl;
             }
-            cout << "Press enter to continue. ";
+            cout << "Press enter to continue... ";
             cin.get();
             break;
         }
@@ -158,6 +228,7 @@ void searchRecord() {
 
 void deleteRecord(Student* students, int& numberRecords) {
     string deleteId;
+    clearScreen();
     cout << "Enter Student ID to delete: ";
     cin >> deleteId;
     int deleteIndex = -1;
@@ -165,7 +236,7 @@ void deleteRecord(Student* students, int& numberRecords) {
     for (int i = 0; i < numberRecords; i++) {
         if (students[i].studentID == deleteId) {
             deleteIndex = i;
-            cout << "Record deleted! Please enter any key to continue. ";
+            cout << "Record deleted! Please enter any key to continue... ";
             cin.get();
             break; 
         }
@@ -173,6 +244,9 @@ void deleteRecord(Student* students, int& numberRecords) {
 
     if (deleteIndex == -1) {
         cout << "Record not found!" << endl;
+        cout << "Please enter any key to continue... ";
+        cin.get();
+        cin.get(); 
     } else {
         for (int i = deleteIndex; i < numberRecords - 1; i++) {
             students[i] = students[i + 1];
@@ -194,10 +268,9 @@ void deleteRecord(Student* students, int& numberRecords) {
             }
         }
         file.close();
-        
     }
-
 }
+
 main()
 {
     int choice;
@@ -206,8 +279,15 @@ main()
     do
     {
         clearScreen();
-        cout<<"1. Add Record\n2. Search Record\n3. Delete Record\n4. Display Records\n5. Exit"<<endl;
-        cout<<"Please type your selection: ";cin>>choice;
+        cout << "Welcome to LaZed Group Student Information System" << endl;
+        cout << "-----------------------------------" << endl;
+        cout << "1. Add Record" << endl;
+        cout << "2. Search Record" << endl;
+        cout << "3. Delete Record" << endl;
+        cout << "4. Display Records" << endl;
+        cout << "5. Exit" << endl;
+        cout << "-----------------------------------" << endl;
+        cout << "Please enter your selection: ";cin >> choice;
         switch (choice)
         {
         case 1:
@@ -220,6 +300,7 @@ main()
             deleteRecord(students,numberRecords);
             break;
         case 4:
+            displayAllRecords();
             break;
         default:
             break;
