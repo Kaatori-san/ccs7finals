@@ -138,7 +138,7 @@ void displayAllRecords() {
         cout << "Unable to open records.txt" << endl;
     }
     cout << "Press enter to continue... ";
-    cin.get();
+    cin.ignore();
     cin.get();
 }
 
