@@ -140,7 +140,9 @@ void displayAllRecords() { // show all stored records
     } else {
         cout << "Unable to open records.txt" << endl;
     }
-    waitUserInput();
+    cout << "Press enter to continue... ";
+    cin.get();
+    cin.get();
 }
 
 void searchRecord() { // search for record
