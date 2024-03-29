@@ -279,8 +279,15 @@ main()
     do
     {
         clearScreen();
-        cout<<"1. Add Record\n2. Search Record\n3. Delete Record\n4. Display Records\n5. Exit"<<endl;
-        cout<<"Please type your selection: ";cin>>choice;
+        cout << "Welcome to LaZed Group Student Information System" << endl;
+        cout << "-----------------------------------" << endl;
+        cout << "1. Add Record" << endl;
+        cout << "2. Search Record" << endl;
+        cout << "3. Delete Record" << endl;
+        cout << "4. Display Records" << endl;
+        cout << "5. Exit" << endl;
+        cout << "-----------------------------------" << endl;
+        cout << "Please enter your selection: ";cin >> choice;
         switch (choice)
         {
         case 1:
